@@ -1,7 +1,7 @@
 .DS_Store
 Library
 Temp
-Assets/Local.meta
+Assets/_local.meta
 *.csproj
 *.pidb
 *.unityproj
