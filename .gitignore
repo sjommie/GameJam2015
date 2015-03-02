@@ -1,7 +1,6 @@
 .DS_Store
 Library
 Temp
-Assets/Local/**
 Assets/Local.meta
 *.csproj
 *.pidb
