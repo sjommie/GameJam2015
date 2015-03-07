@@ -8,7 +8,7 @@ public class ChunkContainer : MonoBehaviour {
 	public Transform chunk;
 
 	private int chunkSize;
-	public int chunkRenderDistance;
+	public int chunkRenderDistance = 1;
 
 
 	private Camera cam;
@@ -73,16 +73,11 @@ public class ChunkContainer : MonoBehaviour {
 		float x = Mathf.Round (cam.transform.position.x / 80);
 		float y = Mathf.Round (cam.transform.position.y / 80);
 
-		addIfAvailable (new Vector2 (x-chunkRenderDistance, y-chunkRenderDistance));
-		addIfAvailable (new Vector2 (x, y-chunkRenderDistance));
-        addIfAvailable (new Vector2 (x+chunkRenderDistance, y-chunkRenderDistance));
-		addIfAvailable (new Vector2 (x-chunkRenderDistance, y));
-		addIfAvailable (new Vector2 (x, y));
-		addIfAvailable (new Vector2 (x+chunkRenderDistance, y));
-		addIfAvailable (new Vector2 (x-chunkRenderDistance, y+chunkRenderDistance));
-		addIfAvailable (new Vector2 (x, y+chunkRenderDistance));
-		addIfAvailable (new Vector2 (x+chunkRenderDistance, y+chunkRenderDistance));
-
+		for (int xOffset = -chunkRenderDistance; xOffset < chunkRenderDistance; xOffset++){
+			for (int yOffset = -chunkRenderDistance; yOffset < chunkRenderDistance; yOffset++){
+				addIfAvailable (new Vector2 (x + xOffset, y + yOffset));
+			}
+		}
 	}
 
 }
