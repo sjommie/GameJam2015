@@ -81,12 +81,18 @@ namespace UnitySampleAssets._2D
             }
 
             if (IDied)
-                rigidbody2D.position = new Vector2(0, 00);
+            {
+                ResetPlayer();
+            }
         }
         
-
-
-
+        private void ResetPlayer()
+        {
+            rigidbody2D.position = new Vector2(cam.transform.position.x, cam.transform.position.y);
+            rigidbody2D.velocity = new Vector2(0, 0);
+            JetFuel = MaxJetFuel;
+        }
+        
         private void FixedUpdate()
         {
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
@@ -172,6 +178,8 @@ namespace UnitySampleAssets._2D
 
             if (rigidbody2D.velocity.y > maxYSpeed)
                 rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, maxYSpeed);
+            if (rigidbody2D.velocity.y < -2 * maxYSpeed)
+                rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -2 * maxYSpeed);
         }
 
         public GameObject leftBullet;
