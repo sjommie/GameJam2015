@@ -31,7 +31,7 @@ public class CountDown : MonoBehaviour {
             }
             if (Time.time - CountdownStart < 5)
             {
-                var timeleft = (int)(CountdownStart + 5 - Time.time);
+                var timeleft = (int)(CountdownStart + 5.9 - Time.time);
                 if (timeleft == 0)
                 {
                     this.transform.Find("Text").guiText.text = "Play";
