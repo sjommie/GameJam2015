@@ -12,7 +12,7 @@ public class ChunkGenerator : MonoBehaviour {
 	public Transform tileForest;
 	public Transform tileBounce;
 	
-	public int tileSize = 5;
+	public float tileSize = 0.32f;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +23,7 @@ public class ChunkGenerator : MonoBehaviour {
 
 		for (int y = 0; y < 16; y++){
 			for (int x = 0; x < 16; x++){
+
 				char tileType = level[y][x];
 
 				Vector2 pos = new Vector2(transform.position.x + x, transform.position.y - y);
@@ -36,24 +37,22 @@ public class ChunkGenerator : MonoBehaviour {
 				case 'w':
 					// wood
 					break;
-				case 'g':
-					// grass
-					break;
 				case 'i':
-					// ice
+					placeTile(pos, tileIce);
 					break;
 				case 'l':
 					// lava
+					placeTile(pos, tileLava);
 					break;
 				case 'F':
 					// forest
 					break;
 				case 'b':
-					// bounce
+					placeTile(pos, tileBounce);
 					break;
-				case 'x':
+				case 'g':
 					// floor
-					placeTile(pos, tileFloor);
+					placeTile(pos, tileGrass);
 					break;
 				default:
 					break;
