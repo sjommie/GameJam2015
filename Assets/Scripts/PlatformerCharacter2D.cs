@@ -66,8 +66,8 @@ namespace UnitySampleAssets._2D
         void Start()
         {
             cam = Camera.main;
-            
-        }  
+
+        }
         private void Update()
         {
             IDied = false;
@@ -78,7 +78,7 @@ namespace UnitySampleAssets._2D
             //}
 
             planes = GeometryUtility.CalculateFrustumPlanes(cam);
-            if (!GeometryUtility.TestPlanesAABB(planes, new Bounds(rigidbody2D.position, new Vector3(0.1f,0.1f,0.1f ))))
+            if (!GeometryUtility.TestPlanesAABB(planes, new Bounds(rigidbody2D.position, new Vector3(0.1f, 0.1f, 0.1f))))
             {
                 IDied = true;
             }
@@ -88,7 +88,7 @@ namespace UnitySampleAssets._2D
                 ResetPlayer();
             }
         }
-        
+
         private void ResetPlayer()
         {
             rigidbody2D.position = new Vector2(cam.transform.position.x, cam.transform.position.y);
@@ -102,15 +102,15 @@ namespace UnitySampleAssets._2D
         {
             if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
             {
-                if (coll.gameObject.rigidbody2D.velocity.magnitude > 3.0f)
+                if (coll.gameObject.rigidbody2D.velocity.x > 3.0f)
                 {
                     //JetFuel = 0;
                     hitTime = Time.time;
                     //rigidbody2D.angularVelocity = 400;
                 }
             }
-        } 
-        
+        }
+
 
 
         private void FixedUpdate()
@@ -131,8 +131,6 @@ namespace UnitySampleAssets._2D
         private bool doubleJump;
         public void Move(float move, bool crouch, bool jump)
         {
-
-
             // If crouching, check to see if the character can stand up
             if (!crouch && anim.GetBool("Crouch"))
             {
@@ -176,7 +174,7 @@ namespace UnitySampleAssets._2D
             }
 
             // Keeping space down = jetting!
-            if (jump && JetFuel > 0  && (Time.time - hitTime > jetDisableTime))
+            if (jump && JetFuel > 0 && (Time.time - hitTime > jetDisableTime))
             {
                 jetting = true;
                 if (!audio.isPlaying)
@@ -202,11 +200,13 @@ namespace UnitySampleAssets._2D
                 rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -2 * maxYSpeed);
         }
 
-        public GameObject leftBullet;
-        public GameObject rightBullet;
+        public GameObject NormalBulletPrefab;
+        public GameObject HeavyBulletPrefab;
+        public GameObject LaserPrefab;
 
         public float fireDelay = 0.0f;
         public float lastFireTime;
+
 
         public void Fire()
         {
@@ -215,18 +215,24 @@ namespace UnitySampleAssets._2D
                 // Create a new bullet at “transform.position”
                 // Which is the current position of the ship
                 GameObject bullet;
+                bullet = (GameObject)Instantiate(NormalBulletPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+                bullet.name = "Bullet" + control.PlayerID;
                 if (facingRight)
                 {
-                    bullet = (GameObject)Instantiate(rightBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+                    bullet.rigidbody2D.position += new Vector2(2f, 0f);
                 }
                 else
                 {
-                    bullet = (GameObject)Instantiate(leftBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 180)));
+                    bullet.rigidbody2D.position += new Vector2(-2f, 0f);
                 }
-                bullet.name = "Bullet" + control.PlayerID;
-
+                var bulletscript = bullet.GetComponent<BulletScript>();
+                bulletscript.FacingRight = facingRight;
+                fireDelay = bulletscript.fireDelay;
                 lastFireTime = Time.time;
+                rigidbody2D.AddForce(new Vector2(bulletscript.KnockBackForce * (facingRight ? 1 : -1), 0));
             }
+
+
         }
 
         private void Flip()
