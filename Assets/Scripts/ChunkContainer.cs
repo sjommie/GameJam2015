@@ -70,11 +70,9 @@ public class ChunkContainer : MonoBehaviour {
 	void spawnChunk(Vector2 loc){
 		Vector3 location = new Vector3 ((loc.x * chunkSize) - 8, (loc.y * chunkSize) - 8, 0);
 
-		Debug.Log ("Adding chunk at " + loc.x + ", " + loc.y);
 		Transform cloneChunk;
 		cloneChunk = Instantiate (chunk, location, new Quaternion()) as Transform;
 
-		Debug.Log ("Prepping chunk for population..");
 		cloneChunk.GetComponent<ChunkGenerator> ().populateChunk(levels);
 
 	}

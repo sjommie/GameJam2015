@@ -5,6 +5,13 @@ using System.Collections.Generic;
 public class ChunkGenerator : MonoBehaviour {
 
 	public Transform tileFloor;
+	public Transform tileWood;
+	public Transform tileGrass;
+	public Transform tileIce;
+	public Transform tileLava;
+	public Transform tileForest;
+	public Transform tileBounce;
+	
 	public int tileSize = 5;
 
 	// Use this for initialization
@@ -18,15 +25,35 @@ public class ChunkGenerator : MonoBehaviour {
 			for (int x = 0; x < 16; x++){
 				char tileType = level[y][x];
 
+				Vector2 pos = new Vector2(transform.position.x + x, transform.position.y - y);
+
 				// build the chunk
 				switch (tileType)
 				{
 				case '.':
 					// air
 					break;
+				case 'w':
+					// wood
+					break;
+				case 'g':
+					// grass
+					break;
+				case 'i':
+					// ice
+					break;
+				case 'l':
+					// lava
+					break;
+				case 'F':
+					// forest
+					break;
+				case 'b':
+					// bounce
+					break;
 				case 'x':
 					// floor
-					placeTile(new Vector2(transform.position.x + x, transform.position.y - y), tileFloor);
+					placeTile(pos, tileFloor);
 					break;
 				default:
 					break;
