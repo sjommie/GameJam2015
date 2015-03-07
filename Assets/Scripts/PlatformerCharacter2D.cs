@@ -32,6 +32,8 @@ namespace UnitySampleAssets._2D
         [SerializeField]
         private LayerMask whatIsGround; // A mask determining what is ground to the character
 
+        private Platformer2DUserControl control;
+
         private Transform groundCheck; // A position marking where to check if the player is grounded.
         private float groundedRadius = .2f; // Radius of the overlap circle to determine if grounded
         private bool grounded = false; // Whether or not the player is grounded.
@@ -48,6 +50,7 @@ namespace UnitySampleAssets._2D
         private void Awake()
         {
             // Setting up references.
+            control = GetComponent<Platformer2DUserControl>();
             groundCheck = transform.Find("GroundCheck");
             ceilingCheck = transform.Find("CeilingCheck");
             anim = GetComponent<Animator>();
@@ -92,7 +95,24 @@ namespace UnitySampleAssets._2D
             rigidbody2D.velocity = new Vector2(0, 0);
             JetFuel = MaxJetFuel;
         }
+
+        float hitTime = -1000;
+        float jetDisableTime = 2;
+        public void OnCollisionEnter2D(Collision2D coll)
+        {
+            if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
+            {
+                if (coll.gameObject.rigidbody2D.velocity.magnitude > 3.0f)
+                {
+                    //JetFuel = 0;
+                    hitTime = Time.time;
+                    //rigidbody2D.angularVelocity = 400;
+                }
+            }
+        } 
         
+
+
         private void FixedUpdate()
         {
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
@@ -156,7 +176,7 @@ namespace UnitySampleAssets._2D
             }
 
             // Keeping space down = jetting!
-            if (jump && JetFuel > 0)
+            if (jump && JetFuel > 0  && (Time.time - hitTime > jetDisableTime))
             {
                 jetting = true;
                 if (!audio.isPlaying)
@@ -194,15 +214,16 @@ namespace UnitySampleAssets._2D
             {
                 // Create a new bullet at “transform.position”
                 // Which is the current position of the ship
+                GameObject bullet;
                 if (facingRight)
                 {
-                    Instantiate(rightBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+                    bullet = (GameObject)Instantiate(rightBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
                 }
                 else
                 {
-                    Instantiate(leftBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 180)));
+                    bullet = (GameObject)Instantiate(leftBullet, transform.position, Quaternion.Euler(new Vector3(0, 0, 180)));
                 }
-
+                bullet.name = "Bullet" + control.PlayerID;
 
                 lastFireTime = Time.time;
             }

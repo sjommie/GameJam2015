@@ -40,5 +40,7 @@ namespace UnitySampleAssets._2D
             character.Move(h * Time.deltaTime, crouch, jump);
             jump = false;
         }
+
+
     }
 }
