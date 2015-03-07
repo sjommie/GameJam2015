@@ -78,17 +78,6 @@ public class ChunkContainer : MonoBehaviour {
 				addIfAvailable (new Vector2 (x + xOffset, y + yOffset));
 			}
 		}
-
-//		addIfAvailable (new Vector2 (x-chunkRenderDistance, y-chunkRenderDistance));
-//		addIfAvailable (new Vector2 (x, y-chunkRenderDistance));
-//        addIfAvailable (new Vector2 (x+chunkRenderDistance, y-chunkRenderDistance));
-//		addIfAvailable (new Vector2 (x-chunkRenderDistance, y));
-//		addIfAvailable (new Vector2 (x, y));
-//		addIfAvailable (new Vector2 (x+chunkRenderDistance, y));
-//		addIfAvailable (new Vector2 (x-chunkRenderDistance, y+chunkRenderDistance));
-//		addIfAvailable (new Vector2 (x, y+chunkRenderDistance));
-//		addIfAvailable (new Vector2 (x+chunkRenderDistance, y+chunkRenderDistance));
-
 	}
 
 }
