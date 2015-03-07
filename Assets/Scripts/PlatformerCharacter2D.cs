@@ -97,10 +97,10 @@ namespace UnitySampleAssets._2D
         {
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
             grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
-                                 LayerMask.NameToLayer("OneWayPlatform"),
-                                 !grounded || rigidbody2D.velocity.y > 0
-                                );
+            //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
+            //                     LayerMask.NameToLayer("OneWayPlatform"),
+            //                     !grounded || rigidbody2D.velocity.y > 0
+            //                    );
 
             anim.SetBool("Ground", grounded);
 

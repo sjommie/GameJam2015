@@ -7,10 +7,15 @@ public class BulletScript : MonoBehaviour
     public float speed = 10;
     //public bool GoingRight;
     // Use this for initialization
-    void Start()
-    {
 
+
+    IEnumerator Start()
+    {
         rigidbody2D.velocity = new Vector3(speed, Random.Range(-0.2f, 0.2f));
+        ParticleEmitter emitter = GetComponentInChildren<ParticleEmitter>();
+        emitter.emit = true;
+        yield return new WaitForSeconds(0.2f);
+        emitter.emit = false;
     }
 
     // Update is called once per frame
