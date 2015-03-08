@@ -84,8 +84,6 @@ public class ChunkContainer : MonoBehaviour {
 		float x = Mathf.Round (cam.transform.position.x / chunkSizeInUnits);
 		float y = Mathf.Round (cam.transform.position.y / chunkSizeInUnits);
 
-		Debug.Log (new Vector2 (x, y));
-
 		for (int xOffset = -chunkRenderDistance; xOffset < chunkRenderDistance; xOffset++){
 			for (int yOffset = -chunkRenderDistance; yOffset < chunkRenderDistance; yOffset++){
 				addIfAvailable (new Vector2 (x + xOffset, y + yOffset));
