@@ -97,16 +97,14 @@ namespace UnitySampleAssets._2D
         }
 
         float hitTime = -1000;
-        float jetDisableTime = 2;
+        float jetDisableTime = 3;
         public void OnCollisionEnter2D(Collision2D coll)
         {
             if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
             {
                 if (coll.gameObject.rigidbody2D.velocity.x > 3.0f)
                 {
-                    //JetFuel = 0;
                     hitTime = Time.time;
-                    //rigidbody2D.angularVelocity = 400;
                 }
             }
         }
@@ -179,6 +177,12 @@ namespace UnitySampleAssets._2D
                 jetting = true;
                 if (!audio.isPlaying)
                     audio.Play();
+
+                foreach(var item in GetComponentsInChildren<ParticleEmitter>())
+                {
+                    item.emit = true;
+                }
+
                 JetFuel -= jetDrain;
                 JetFuel = Mathf.Max(JetFuel, 0);
                 rigidbody2D.AddForce(new Vector2(0f, jetForce));
@@ -186,6 +190,11 @@ namespace UnitySampleAssets._2D
             else
             {
                 jetting = false;
+
+                foreach (var item in GetComponentsInChildren<ParticleEmitter>())
+                {
+                    item.emit = false;
+                }
                 audio.Stop();
             }
             if (grounded)

@@ -11,13 +11,9 @@ public class BulletScript : MonoBehaviour
     // Use this for initialization
     Camera cam;
 
-    IEnumerator Start()
+    void Start()
     {
         cam = Camera.main;
-        ParticleEmitter emitter = GetComponentInChildren<ParticleEmitter>();
-        emitter.emit = true;
-        yield return new WaitForSeconds(0.2f);
-        emitter.emit = false;
     }
 
     // Update is called once per frame
@@ -27,16 +23,27 @@ public class BulletScript : MonoBehaviour
             Destroy(gameObject);
     }
 
-
-    // Gets called when the object goes out of the screen
-    void OnBecameInvisible()
+    public void OnCollisionEnter2D(Collision2D coll)
     {
-        // Destroy the bullet 
-        Destroy(gameObject);
+        if (coll.gameObject.tag.StartsWith("Player"))
+        {
+            //ParticleEmitter emitter = GetComponentInChildren<ParticleEmitter>();
+            //emitter.emit = true;
+            //yield return new WaitForSeconds(0.2f);
+            //emitter.emit = false;
+           
+
+            Instantiate(BloodParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+           
+
+        }
     }
 
     private bool facingRight = false;
     public bool FacingRight { get { return facingRight; } set { facingRight = value; Speed = Mathf.Abs(Speed) * (facingRight ? 1 : -1); GetComponentInChildren<ParticleEmitter>().localVelocity = new Vector3(10f * (facingRight ? 1 : -1), 0f); } }
     [SerializeField]
     public float KnockBackForce = 500f;
+
+    [SerializeField]
+    public GameObject BloodParticlePrefab = null;
 }

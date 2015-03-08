@@ -34,7 +34,7 @@ namespace UnitySampleAssets._2D
         private void FixedUpdate()
         {
             // Read the inputs.
-            bool crouch = Input.GetButton(PlayerID + "Crouch");
+            bool crouch = false; // = Input.GetButton(PlayerID + "Crouch");
             float h = Input.GetAxis(PlayerID + "Horizontal");
             // Pass all parameters to the character control script.
             character.Move(h * Time.deltaTime, crouch, jump);
