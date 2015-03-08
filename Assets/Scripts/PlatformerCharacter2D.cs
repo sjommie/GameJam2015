@@ -8,9 +8,9 @@ namespace UnitySampleAssets._2D
         private bool facingRight = true; // For determining which way the player is currently facing.
 
         [SerializeField]
-        private float maxSpeed = 10f; // The fastest the player can travel in the x axis.
+        private float maxSpeed = 1f; // The fastest the player can travel in the x axis.
         [SerializeField]
-        private float jumpForce = 10f; // Amount of force added when the player jumps.	
+        private float jumpForce = 5f; // Amount of force added when the player jumps.	
 
         [SerializeField]
         private float maxYSpeed = 10f; // The fastest the player can travel in the x axis.
