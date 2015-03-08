@@ -10,7 +10,7 @@ public class LevelImporter : ScriptableObject {
 	public void import () {
 		Debug.Log ("Reading chunk levels from levels.txt");
 
-		string fileData = System.IO.File.ReadAllText ("Assets/_local/levels.txt");
+		string fileData = System.IO.File.ReadAllText ("Assets/Scripts/levels.txt");
 		string[] lines = fileData.Split("\n"[0]);
 
 		List<string> level = new List<string>();
