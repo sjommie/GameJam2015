@@ -74,6 +74,7 @@ namespace UnitySampleAssets._2D
 
         public GameObject DeathParticlePrefab;
         public GameObject SpawnParticlePrefab;
+        public GameObject BloodParticlePrefab;
 
         private void Update()
         {
@@ -113,14 +114,16 @@ namespace UnitySampleAssets._2D
         }
 
         float hitTime = -1000;
-        float jetDisableTime = 6;
+        float jetDisableTime = 3;
         public void OnCollisionEnter2D(Collision2D coll)
         {
             if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
             {
-                if (coll.gameObject.rigidbody2D.velocity.x > 3.0f)
+                if (Mathf.Abs(coll.gameObject.rigidbody2D.velocity.magnitude) > 10.0f)
                 {
+                    Instantiate(BloodParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
                     hitTime = Time.time;
+                    //JetFuel = 0;
                 }
             }
         }
