@@ -19,7 +19,7 @@ public class ChunkContainer : MonoBehaviour {
 	
 	void Awake(){
 		chunkSize = 16;
-		chunkSizeInUnits = 0.32f * chunkSize;
+		chunkSizeInUnits = ChunkGenerator.tileSize * chunkSize;
 
 		Debug.Log ("Starting world generator...");
 		levelImporter = new LevelImporter ();
@@ -70,10 +70,8 @@ public class ChunkContainer : MonoBehaviour {
 	}
 
 	void spawnChunk(Vector2 loc){
-		Vector3 location = new Vector3 ((loc.x * chunkSize) - 8, (loc.y * chunkSize) - 8, 0);
-
-		Transform cloneChunk;
-		cloneChunk = Instantiate (chunk, location, new Quaternion()) as Transform;
+		Vector3 location = new Vector3 ((loc.x * chunkSize) - chunkSize/2, (loc.y * chunkSize) - chunkSize/2, 0);
+		Transform cloneChunk = (Transform) Instantiate (chunk, location, new Quaternion());
 
 		cloneChunk.GetComponent<ChunkGenerator> ().populateChunk(levels);
 

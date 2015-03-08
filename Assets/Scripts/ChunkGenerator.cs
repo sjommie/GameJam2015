@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ChunkGenerator : MonoBehaviour {
 
-	public Transform tileFloor;
+	public Transform tileDirt;
 	public Transform tileWood;
 	public Transform tileGrass;
 	public Transform tileIce;
@@ -12,7 +12,7 @@ public class ChunkGenerator : MonoBehaviour {
 	public Transform tileForest;
 	public Transform tileBounce;
 	
-	public float tileSize = 0.32f;
+	public static float tileSize = 0.64f;
 
 	// Use this for initialization
 	void Start () {
@@ -34,8 +34,12 @@ public class ChunkGenerator : MonoBehaviour {
 				case '.':
 					// air
 					break;
+				case 'd':
+					placeTile(pos, tileDirt);
+					break;
 				case 'w':
 					// wood
+					placeTile(pos, tileWood);
 					break;
 				case 'i':
 					placeTile(pos, tileIce);
@@ -44,8 +48,8 @@ public class ChunkGenerator : MonoBehaviour {
 					// lava
 					placeTile(pos, tileLava);
 					break;
-				case 'F':
-					// forest
+				case 'f':
+					placeTile(pos, tileForest);
 					break;
 				case 'b':
 					placeTile(pos, tileBounce);
