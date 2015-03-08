@@ -14,10 +14,6 @@ public class ChunkGenerator : MonoBehaviour {
 	
 	public static float tileSize = 0.64f;
 
-	// Use this for initialization
-	void Start () {
-	}
-
 	public void populateChunk(List<List<string>> levels){
 		List<string> level = levels [Random.Range (0, levels.Count)];
 
@@ -69,9 +65,5 @@ public class ChunkGenerator : MonoBehaviour {
 		Vector3 location = new Vector3 (loc.x * tileSize, loc.y * tileSize, 0);
 		Instantiate (tile, location, new Quaternion());
 	}
-
-	// Update is called once per frame
-	void Update () {
 	
-	}
 }

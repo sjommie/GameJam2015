@@ -15,48 +15,30 @@ public class ChunkContainer : MonoBehaviour {
 	private float camSize;
 
 	LevelImporter levelImporter;
-	List< List<string>> levels; 
+	List<List<string>> levels; 
 	
 	void Awake(){
 		chunkSize = 16;
 		chunkSizeInUnits = ChunkGenerator.tileSize * chunkSize;
 
+		// Start level importer
 		Debug.Log ("Starting world generator...");
-//		levelImporter = (LevelImporter) Instantiate (levelImporter, new Vector3(), new Quaternion());
-		levelImporter = new LevelImporter ();
+		levelImporter = ScriptableObject.CreateInstance<LevelImporter> ();
 		levelImporter.import ();
-
+		
 		Debug.Log ("Getting levels from importer...");
 		levels = levelImporter.getLevels ();
+		
 		Debug.Log ("Nr. of levels imported: " + levels.Count);
 	}
 
 	// Use this for initialization
 	void Start () {
+		// Set camera
 		cam = Camera.main;
+		Debug.Log ("Starting chunk generation...");
 
-		Debug.Log ("Adding first 9 chunks...");
-		// generate the first 9 chunks so people don't see that it's all fake
-		spawnChunk (new Vector2 (-1, -1));
-		spawnChunk (new Vector2 (0, -1));
-		spawnChunk (new Vector2 (1, -1));
-		spawnChunk (new Vector2 (-1, 0));
-		spawnChunk (new Vector2 (0, 0));
-		spawnChunk (new Vector2 (1, 0));
-		spawnChunk (new Vector2 (-1, 1));
-		spawnChunk (new Vector2 (0, 1));
-		spawnChunk (new Vector2 (1, 1));
-
-		// remember which chunks have been set
-		map.Add (new Vector2 (-1, -1));
-		map.Add (new Vector2 (0, -1));
-		map.Add (new Vector2 (1, -1));
-		map.Add (new Vector2 (-1, 0));
-		map.Add (new Vector2 (0, 0));
-		map.Add (new Vector2 (1, 0));
-		map.Add (new Vector2 (-1, 1));
-		map.Add (new Vector2 (0, 1));
-		map.Add (new Vector2 (1, 1));
+		generateChunks ();
 	}
 
 	public bool isAvailable(Vector2 loc){
@@ -75,21 +57,22 @@ public class ChunkContainer : MonoBehaviour {
 		Transform cloneChunk = (Transform) Instantiate (chunk, location, new Quaternion());
 
 		cloneChunk.GetComponent<ChunkGenerator> ().populateChunk(levels);
-
 	}
 
 	// Update is called once per frame
 	void Update () {
+		generateChunks ();
+	}
 
-		//generate new chunks when needed
+	void generateChunks() {
 		float x = Mathf.Round (cam.transform.position.x / chunkSizeInUnits);
 		float y = Mathf.Round (cam.transform.position.y / chunkSizeInUnits);
-
+		
 		for (int xOffset = -chunkRenderDistance; xOffset < chunkRenderDistance; xOffset++){
 			for (int yOffset = -chunkRenderDistance; yOffset < chunkRenderDistance; yOffset++){
 				addIfAvailable (new Vector2 (x + xOffset, y + yOffset));
 			}
 		}
-	}
+	} 
 
 }
