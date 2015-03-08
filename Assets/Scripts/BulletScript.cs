@@ -33,7 +33,7 @@ public class BulletScript : MonoBehaviour
             //emitter.emit = false;
            
 
-            Instantiate(BloodParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+//            Instantiate(BloodParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
            
 
         }
