@@ -42,7 +42,10 @@ namespace UnitySampleAssets._2D
         private Animator anim; // Reference to the player's animator component.
 
         Transform playerGraphics;		// Reference to the graphics so we can change direction
-        public bool IDied;
+
+        public bool IsDead = false;
+        float deathTime = 1;
+        float timeOfDying = -1000;
         public float JetFuel = 163;
         public float MaxJetFuel = 163;
         private bool jetting;
@@ -68,15 +71,18 @@ namespace UnitySampleAssets._2D
             cam = Camera.main;
 
         }
+
+        public GameObject DeathParticlePrefab;
         private void Update()
         {
-            IDied = false;
-            //if (rigidbody2D.position.y < -10)
-            //{
-            //    rigidbody2D.position = new Vector2(0, 20);
-            //    IDied = true;
-            //}
+            if (IsDead)
+            {
+                if (Time.time - deathTime > timeOfDying)
+                    ResetPlayer();
+                return;
+            }
 
+            var IDied = false;
             planes = GeometryUtility.CalculateFrustumPlanes(cam);
             if (!GeometryUtility.TestPlanesAABB(planes, new Bounds(rigidbody2D.position, new Vector3(0.1f, 0.1f, 0.1f))))
             {
@@ -85,7 +91,10 @@ namespace UnitySampleAssets._2D
 
             if (IDied)
             {
-                ResetPlayer();
+                Instantiate(DeathParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+                rigidbody2D.position = rigidbody2D.position - new Vector2(1000,1000);
+                timeOfDying = Time.time;
+                IsDead = true;
             }
         }
 
@@ -95,10 +104,12 @@ namespace UnitySampleAssets._2D
             rigidbody2D.velocity = new Vector2(0, 0);
             JetFuel = MaxJetFuel;
             hitTime = -1000;
+            timeOfDying = -1000;
+            IsDead = false;
         }
 
         float hitTime = -1000;
-        float jetDisableTime = 3;
+        float jetDisableTime = 6;
         public void OnCollisionEnter2D(Collision2D coll)
         {
             if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
@@ -114,6 +125,9 @@ namespace UnitySampleAssets._2D
 
         private void FixedUpdate()
         {
+            if (IsDead)
+                return;
+
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
             grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
             //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
@@ -130,6 +144,9 @@ namespace UnitySampleAssets._2D
         private bool doubleJump;
         public void Move(float move, bool crouch, bool jump)
         {
+            if (IsDead)
+                return;
+
             // If crouching, check to see if the character can stand up
             if (!crouch && anim.GetBool("Crouch"))
             {
@@ -220,6 +237,9 @@ namespace UnitySampleAssets._2D
 
         public void Fire()
         {
+            if (IsDead)
+                return;
+
             if (Time.time - fireDelay >= lastFireTime)
             {
                 // Create a new bullet at “transform.position”
@@ -229,17 +249,17 @@ namespace UnitySampleAssets._2D
                 bullet.name = "Bullet" + control.PlayerID;
                 if (facingRight)
                 {
-                    bullet.rigidbody2D.position += new Vector2(2f, 0f);
+                    bullet.rigidbody2D.position += new Vector2(0.5f, 0f);
                 }
                 else
                 {
-                    bullet.rigidbody2D.position += new Vector2(-2f, 0f);
+                    bullet.rigidbody2D.position += new Vector2(-0.5f, 0f);
                 }
                 var bulletscript = bullet.GetComponent<BulletScript>();
                 bulletscript.FacingRight = facingRight;
                 fireDelay = bulletscript.fireDelay;
                 lastFireTime = Time.time;
-                rigidbody2D.AddForce(new Vector2(bulletscript.KnockBackForce * (facingRight ? 1 : -1), 0));
+                rigidbody2D.AddForce(new Vector2(bulletscript.KnockBackForce * (facingRight ? -1 : 1), 0));
             }
 
 
