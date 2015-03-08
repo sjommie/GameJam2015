@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour {
 	public float bezierVariation = 10f;
 
 	bool isRunning;
+	int animationId;
 
 	void Start() {
 		performBezierMove ();
@@ -29,8 +30,8 @@ public class CameraController : MonoBehaviour {
 		Vector3 newPosition = generateRandomVector (transform.position);
 		float distance = Vector3.Distance (transform.position, newPosition);
 		isRunning = true;
-//		LeanTween.move (gameObject, newPosition, distance / range * speed).setEase (LeanTweenType.easeInOutQuad);
-		LeanTween.move (
+
+		animationId = LeanTween.move (
 			gameObject,
 //		    new Vector3[] {
 //				transform.position,
@@ -42,6 +43,14 @@ public class CameraController : MonoBehaviour {
 			distance / range * speed
 		).setEase (LeanTweenType.easeOutQuad).setOnComplete(() => {
 			isRunning = false;
-		});
+		}).id;
+	}
+
+	public void pauseMovement() {
+		LeanTween.pause (animationId);
+	}
+
+	public void resumeMovement() {
+		LeanTween.resume (animationId);
 	}
 }
