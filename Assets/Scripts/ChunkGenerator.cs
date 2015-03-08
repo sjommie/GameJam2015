@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class ChunkGenerator : MonoBehaviour {
 
+	public static float tileSize = 0.64f;
+
 	public Transform tileDirt;
 	public Transform tileWood;
 	public Transform tileGrass;
@@ -11,12 +13,9 @@ public class ChunkGenerator : MonoBehaviour {
 	public Transform tileLava;
 	public Transform tileForest;
 	public Transform tileBounce;
+	public List<Transform> pickups;
 	
-	public static float tileSize = 0.64f;
 
-	// Use this for initialization
-	void Start () {
-	}
 
 	public void populateChunk(List<List<string>> levels){
 		List<string> level = levels [Random.Range (0, levels.Count)];
@@ -58,6 +57,12 @@ public class ChunkGenerator : MonoBehaviour {
 					// floor
 					placeTile(pos, tileGrass);
 					break;
+				case '*':
+					// pickup, 20% chance to spawn a pickup which is randomly chosen from available pickups
+					if (Random.value >= 0.70f){
+						placeTile(pos, pickups [Random.Range (0, pickups.Count)]);
+					}
+					break;
 				default:
 					break;
 				}
@@ -69,9 +74,5 @@ public class ChunkGenerator : MonoBehaviour {
 		Vector3 location = new Vector3 (loc.x * tileSize, loc.y * tileSize, 0);
 		Instantiate (tile, location, new Quaternion());
 	}
-
-	// Update is called once per frame
-	void Update () {
 	
-	}
 }
