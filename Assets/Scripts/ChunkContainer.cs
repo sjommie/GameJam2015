@@ -22,6 +22,7 @@ public class ChunkContainer : MonoBehaviour {
 		chunkSizeInUnits = ChunkGenerator.tileSize * chunkSize;
 
 		Debug.Log ("Starting world generator...");
+//		levelImporter = (LevelImporter) Instantiate (levelImporter, new Vector3(), new Quaternion());
 		levelImporter = new LevelImporter ();
 		levelImporter.import ();
 
