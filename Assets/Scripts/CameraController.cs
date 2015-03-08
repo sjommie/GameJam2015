@@ -39,8 +39,8 @@ public class CameraController : MonoBehaviour {
 //				newPosition
 //			},
 			newPosition,
-			speed
-		)/*.setEase (LeanTweenType.easeOutQuad)*/.setOnComplete(() => {
+			distance / range * speed
+		).setEase (LeanTweenType.easeOutQuad).setOnComplete(() => {
 			isRunning = false;
 		});
 	}
