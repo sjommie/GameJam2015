@@ -94,6 +94,7 @@ namespace UnitySampleAssets._2D
             rigidbody2D.position = new Vector2(cam.transform.position.x, cam.transform.position.y);
             rigidbody2D.velocity = new Vector2(0, 0);
             JetFuel = MaxJetFuel;
+            hitTime = -1000;
         }
 
         float hitTime = -1000;
