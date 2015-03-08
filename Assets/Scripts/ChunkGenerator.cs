@@ -18,7 +18,7 @@ public class ChunkGenerator : MonoBehaviour {
 
 
 	public void populateChunk(List<List<string>> levels){
-		List<string> level = levels [Random.Range (0, levels.Count - 1)];
+		List<string> level = levels [Random.Range (0, levels.Count)];
 
 		for (int y = 0; y < 16; y++){
 			for (int x = 0; x < 16; x++){
