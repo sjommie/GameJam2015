@@ -15,7 +15,12 @@ public class SingleShotParticle : MonoBehaviour {
         if (Time.time - startTime > 0.2f)
         {
             ParticleEmitter emitter = GetComponentInChildren<ParticleEmitter>();
-            emitter.emit = false;
+            if (emitter != null)
+                emitter.emit = false;
+        }
+        if (Time.time - startTime > 5f)
+        {
+            Destroy(gameObject);
         }
 	}
 }
