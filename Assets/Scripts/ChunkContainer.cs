@@ -28,12 +28,9 @@ public class ChunkContainer : MonoBehaviour {
 		Debug.Log ("Getting levels from importer...");
 		levels = levelImporter.getLevels ();
 		Debug.Log ("Nr. of levels imported: " + levels.Count);
-	}
 
-	// Use this for initialization
-	void Start () {
 		cam = Camera.main;
-
+		
 		Debug.Log ("Adding first 9 chunks...");
 		// generate the first 9 chunks so people don't see that it's all fake
 		spawnChunk (new Vector2 (-1, -1));
@@ -45,7 +42,7 @@ public class ChunkContainer : MonoBehaviour {
 		spawnChunk (new Vector2 (-1, 1));
 		spawnChunk (new Vector2 (0, 1));
 		spawnChunk (new Vector2 (1, 1));
-
+		
 		// remember which chunks have been set
 		map.Add (new Vector2 (-1, -1));
 		map.Add (new Vector2 (0, -1));
@@ -56,6 +53,11 @@ public class ChunkContainer : MonoBehaviour {
 		map.Add (new Vector2 (-1, 1));
 		map.Add (new Vector2 (0, 1));
 		map.Add (new Vector2 (1, 1));
+	}
+
+	// Use this for initialization
+	void Start () {
+
 	}
 
 	public bool isAvailable(Vector2 loc){
@@ -70,6 +72,8 @@ public class ChunkContainer : MonoBehaviour {
 	}
 
 	void spawnChunk(Vector2 loc){
+		Debug.Log ("Spawning chunk...");
+
 		Vector3 location = new Vector3 ((loc.x * chunkSize) - chunkSize/2, (loc.y * chunkSize) - chunkSize/2, 0);
 		Transform cloneChunk = (Transform) Instantiate (chunk, location, new Quaternion());
 
