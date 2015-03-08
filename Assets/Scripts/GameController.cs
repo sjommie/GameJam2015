@@ -6,14 +6,19 @@ public class GameController : MonoBehaviour {
 	public int maxHealth;
 	public float deadDelayTime = 3f;
 	public GUIText deadText;
+	public GUIText gameOverText;
 
 	CameraController cameraController;
+	public int numberOfPlayers = 3;
 
 	float deadTime;
 	bool isPaused;
+	bool gameOver;
 
 	void Awake() {
 		resetDeadText ();
+		gameOverText.text = "Game Over! Press 'R' for restart!";
+		gameOverText.enabled = false;
 
 	}
 
@@ -35,9 +40,20 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (gameOver) {
+			resetDeadText();
+			gameOverText.enabled = true;
+
+
+			if (Input.GetKeyDown (KeyCode.R))
+			{
+				Application.LoadLevel (Application.loadedLevel);
+			}
+		}
 		 
 		// Resume camera after delay
-		if (isPaused && deadTime + deadDelayTime < Time.time) {
+		else if (isPaused && deadTime + deadDelayTime < Time.time) {
 			Debug.Log ("Player dead...");
 			cameraController.resumeMovement();
 			isPaused = false;
@@ -56,5 +72,14 @@ public class GameController : MonoBehaviour {
 		deadTime = Time.time;
 
 		GameObject.Destroy (player);
+		numberOfPlayers--;
+
+		if (numberOfPlayers == 0) {
+			setGameOver();
+		}
+	}
+
+	void setGameOver() {
+		gameOver = true;
 	}
 }
