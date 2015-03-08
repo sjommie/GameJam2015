@@ -49,6 +49,13 @@ namespace UnitySampleAssets._2D
 		public float JetFuel = 163;
 		public float MaxJetFuel = 163;
 		private bool jetting;
+
+		GameController gameController;
+		int playerHealth;
+
+		public GUIText healthText;
+		public GUIText fuelText;
+
 		
 		private void Awake()
 		{
@@ -70,6 +77,17 @@ namespace UnitySampleAssets._2D
 		{
 			cam = Camera.main;
 			
+			Debug.Log ("Referencing GameController...");
+			// Reference to GameController
+			GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+			if (gameControllerObject != null) {
+				gameController = gameControllerObject.GetComponent <GameController>();
+			} else {
+				Debug.LogWarning ("Cannot find 'GameController' script");
+			}
+			
+			playerHealth = gameController.maxHealth;
+			healthText.text = playerHealth.ToString();
 		}
 		
 		public GameObject DeathParticlePrefab;
@@ -90,6 +108,13 @@ namespace UnitySampleAssets._2D
 			if (!GeometryUtility.TestPlanesAABB(planes, new Bounds(rigidbody2D.position, new Vector3(0.1f, 0.1f, 0.1f))))
 			{
 				IDied = true;
+				playerHealth--;
+				healthText.text = playerHealth.ToString();
+			}
+
+			// This player died
+			if (playerHealth == 0) {
+				gameController.setDead(gameObject);			
 			}
 			
 			if (IDied)
