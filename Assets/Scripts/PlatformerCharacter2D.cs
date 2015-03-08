@@ -5,6 +5,9 @@ namespace UnitySampleAssets._2D
 
     public class PlatformerCharacter2D : MonoBehaviour
     {
+		int playerHealth;
+		GameController gameController;
+
         private bool facingRight = true; // For determining which way the player is currently facing.
 
         [SerializeField]
@@ -47,6 +50,9 @@ namespace UnitySampleAssets._2D
         public float MaxJetFuel = 163;
         private bool jetting;
 
+		public GUIText healthText;
+		public GUIText fuelText;
+
         private void Awake()
         {
             // Setting up references.
@@ -67,8 +73,20 @@ namespace UnitySampleAssets._2D
         {
             cam = Camera.main;
 
-        }
-        private void Update()
+			Debug.Log ("Referencing GameController...");
+			// Reference to GameController
+			GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+			if (gameControllerObject != null) {
+				gameController = gameControllerObject.GetComponent <GameController>();
+			} else {
+				Debug.LogWarning ("Cannot find 'GameController' script");
+			}
+
+			playerHealth = gameController.maxHealth;
+			healthText.text = playerHealth.ToString();
+		}
+        
+		private void Update()
         {
             IDied = false;
             //if (rigidbody2D.position.y < -10)
@@ -81,8 +99,15 @@ namespace UnitySampleAssets._2D
             if (!GeometryUtility.TestPlanesAABB(planes, new Bounds(rigidbody2D.position, new Vector3(0.1f, 0.1f, 0.1f))))
             {
                 IDied = true;
+				playerHealth--;
+				healthText.text = playerHealth.ToString();
             }
 
+			// This player died
+			if (playerHealth == 0) {
+				gameController.setDead(gameObject);			
+			}
+		
             if (IDied)
             {
                 ResetPlayer();
