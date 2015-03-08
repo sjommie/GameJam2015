@@ -73,6 +73,8 @@ namespace UnitySampleAssets._2D
         }
 
         public GameObject DeathParticlePrefab;
+        public GameObject SpawnParticlePrefab;
+
         private void Update()
         {
             if (IsDead)
@@ -92,6 +94,8 @@ namespace UnitySampleAssets._2D
             if (IDied)
             {
                 Instantiate(DeathParticlePrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+                Instantiate(SpawnParticlePrefab, new Vector3(cam.transform.position.x, cam.transform.position.y, -2), Quaternion.Euler(new Vector3(0, 0, 0)));
+
                 rigidbody2D.position = rigidbody2D.position - new Vector2(1000,1000);
                 timeOfDying = Time.time;
                 IsDead = true;
@@ -196,10 +200,18 @@ namespace UnitySampleAssets._2D
                 if (!audio.isPlaying)
                     audio.Play();
 
-                foreach(var item in GetComponentsInChildren<ParticleEmitter>())
+                foreach (Transform child in transform)
                 {
-                    item.emit = true;
+                    if (child.name.Equals("Jetpack"))
+                    {
+                        foreach (var item in child.GetComponentsInChildren<ParticleEmitter>())
+                        {
+                            item.emit = true;
+                        }
+                        break;
+                    }
                 }
+
 
                 JetFuel -= jetDrain;
                 JetFuel = Mathf.Max(JetFuel, 0);
@@ -208,10 +220,16 @@ namespace UnitySampleAssets._2D
             else
             {
                 jetting = false;
-
-                foreach (var item in GetComponentsInChildren<ParticleEmitter>())
+                foreach (Transform child in transform)
                 {
-                    item.emit = false;
+                    if (child.name.Equals("Jetpack"))
+                    {
+                        foreach (var item in child.GetComponentsInChildren<ParticleEmitter>())
+                        {
+                            item.emit = false;
+                        }
+                        break;
+                    }
                 }
                 audio.Stop();
             }
