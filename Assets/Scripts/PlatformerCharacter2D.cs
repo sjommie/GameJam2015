@@ -128,6 +128,13 @@ namespace UnitySampleAssets._2D
             }
         }
 
+        public Vector3 GetFreeLocation()
+        {
+            Vector2 pos = new Vector3(cam.transform.position.x, cam.transform.position.y, 0.0f);
+            var x = Physics.OverlapSphere(pos, 0.5f);
+            Debug.Log(x.Length);
+            return pos;
+        }
 
 
         private void FixedUpdate()
