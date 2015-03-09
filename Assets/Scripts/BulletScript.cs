@@ -14,12 +14,18 @@ public class BulletScript : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+        spawnTime = Time.time;
     }
 
+    float spawnTime = 0f;
+    float lifetime = 6f;
     // Update is called once per frame
     void Update()
     {
-        if ((new Vector2(cam.transform.position.x, cam.transform.position.y) - rigidbody2D.position).magnitude > 100)
+        if ((new Vector2(cam.transform.position.x, cam.transform.position.y) - rigidbody2D.position).magnitude > 20)
+            Destroy(gameObject);
+
+        if (Time.time - spawnTime > lifetime)
             Destroy(gameObject);
     }
 

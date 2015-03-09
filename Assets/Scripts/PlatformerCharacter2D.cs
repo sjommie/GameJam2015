@@ -88,6 +88,8 @@ namespace UnitySampleAssets._2D
 			
 			playerHealth = gameController.maxHealth;
 			healthText.text = playerHealth.ToString();
+            fuelText.text = JetFuel.ToString("F1");
+            rigidbody2D.gravityScale = 0;
 		}
 		
 		public GameObject DeathParticlePrefab;
@@ -96,6 +98,12 @@ namespace UnitySampleAssets._2D
 		
 		private void Update()
 		{
+            if (gameController.IsStarted)
+                rigidbody2D.gravityScale = 3;
+
+            if (gameController.gameOver )
+                rigidbody2D.gravityScale = 0;
+
 			if (IsDead)
 			{
 				if (Time.time - deathTime > timeOfDying)
@@ -111,6 +119,8 @@ namespace UnitySampleAssets._2D
 				playerHealth--;
 				healthText.text = playerHealth.ToString();
 			}
+
+            fuelText.text = JetFuel.ToString("F1");
 
 			// This player died
 			if (playerHealth == 0) {
@@ -139,7 +149,7 @@ namespace UnitySampleAssets._2D
 		}
 		
 		float hitTime = -1000;
-		float jetDisableTime = 3;
+		float jetDisableTime = 2;
 		public void OnCollisionEnter2D(Collision2D coll)
 		{
 			if (coll.gameObject.name.StartsWith("Bullet") && !coll.gameObject.name.EndsWith(control.PlayerID))
@@ -213,7 +223,7 @@ namespace UnitySampleAssets._2D
 			}
 			
 			// If the player should jump...
-			if (grounded && jump && anim.GetBool("Ground"))
+            if (grounded && jump && anim.GetBool("Ground") && gameController.IsStarted)
 			{
 				// Add a vertical force to the player.
 				grounded = false;
@@ -222,7 +232,7 @@ namespace UnitySampleAssets._2D
 			}
 			
 			// Keeping space down = jetting!
-			if (jump && JetFuel > 0 && (Time.time - hitTime > jetDisableTime))
+			if (jump && JetFuel > 0 && (Time.time - hitTime > jetDisableTime) && gameController.IsStarted)
 			{
 				jetting = true;
 				if (!audio.isPlaying)
@@ -285,6 +295,9 @@ namespace UnitySampleAssets._2D
 		{
 			if (IsDead)
 				return;
+
+            if (!gameController.IsStarted)
+                return;
 			
 			if (Time.time - fireDelay >= lastFireTime)
 			{
