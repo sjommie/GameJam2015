@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnitySampleAssets._2D;
 
 public class GameController : MonoBehaviour {
 
@@ -8,6 +10,10 @@ public class GameController : MonoBehaviour {
     public float startDelayTime = 5f;
 	public GUIText deadText;
 	public GUIText gameOverText;
+    public GameObject CountDownPrefab;
+    private GameObject countDownObject;
+    public GameObject PlayerPrefab;
+    private List<GameObject> Players = new List<GameObject>();
 
 	CameraController cameraController;
 	public int numberOfPlayers = 3;
@@ -36,11 +42,14 @@ public class GameController : MonoBehaviour {
 		GameObject cameraControllerObject = GameObject.FindWithTag ("MainCamera");
 		if (cameraControllerObject != null) {
 			cameraController = cameraControllerObject.GetComponent <CameraController>();
-		} else {
+		} else { 
 			Debug.LogWarning ("Cannot find 'CameraController' script");
 		}
 
         waitForStart = true;
+        numberOfPlayers = 0;
+        gameOverText.text = "Select number of players (2 or 3)";
+        gameOverText.enabled = true;
         startTime = Time.time + startDelayTime;
         
 	}
@@ -50,7 +59,33 @@ public class GameController : MonoBehaviour {
         if (waitForStart)
         {
             cameraController.pauseMovement();
-            if (startTime < Time.time)
+
+            if (Input.GetKey(KeyCode.Alpha2))
+                numberOfPlayers = 2;
+            else if (Input.GetKey(KeyCode.Alpha3))
+                numberOfPlayers = 3;
+
+            // Number of players selected, create countdown and players, remove text
+            if (countDownObject == null && numberOfPlayers > 0)
+            {
+                Debug.Log(GameObject.Find("Player1" + " Fuel").guiText.text.ToString());
+                countDownObject = (GameObject)Instantiate(CountDownPrefab);
+
+                var playerColors = new Color[] { Color.green, Color.red, Color.blue };
+                for (int i = 0; i < numberOfPlayers; i++)
+                {                     
+                    var newPlayer = (GameObject)Instantiate(PlayerPrefab); 
+                    newPlayer.GetComponent<Platformer2DUserControl>().PlayerID = "P" + (i + 1).ToString();
+                    newPlayer.GetComponent<PlatformerCharacter2D>().healthText = GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText;
+                    newPlayer.GetComponent<PlatformerCharacter2D>().fuelText = GameObject.Find("Player" + (i + 1).ToString() + " Fuel").guiText;
+                    newPlayer.GetComponentInChildren<SpriteRenderer>().color = playerColors[i];
+                    Players.Add(newPlayer);
+                }
+                gameOverText.text = "Game Over! Press 'R' for restart!";
+                gameOverText.enabled = false;
+            }
+
+            if (countDownObject != null && !countDownObject.GetComponent<CountDown>().Countdown)
             {
                 cameraController.resumeMovement();
                 waitForStart = false;
