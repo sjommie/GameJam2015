@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour {
 	public float deadDelayTime = 3f;
     public float startDelayTime = 5f;
 	public GUIText deadText;
-	public GUIText gameOverText;
+	public GUIText infoText;
     public GameObject CountDownPrefab;
     private GameObject countDownObject;
     public GameObject PlayerPrefab;
@@ -27,8 +27,8 @@ public class GameController : MonoBehaviour {
 
 	void Awake() {
        	resetDeadText ();
-		gameOverText.text = "Game Over! Press 'R' for restart!";
-		gameOverText.enabled = false;
+		infoText.text = "Game Over! Press 'R' for restart!";
+		infoText.enabled = false;
 
 	}
 
@@ -48,8 +48,8 @@ public class GameController : MonoBehaviour {
 
         waitForStart = true;
         numberOfPlayers = 0;
-        gameOverText.text = "Select number of players (2 or 3)";
-        gameOverText.enabled = true;
+        infoText.text = "Select number of players (2, 3 or 4)";
+        infoText.enabled = true;
         startTime = Time.time + startDelayTime;
         
 	}
@@ -64,25 +64,33 @@ public class GameController : MonoBehaviour {
                 numberOfPlayers = 2;
             else if (Input.GetKey(KeyCode.Alpha3))
                 numberOfPlayers = 3;
+            else if (Input.GetKey(KeyCode.Alpha4))
+                numberOfPlayers = 4;
 
             // Number of players selected, create countdown and players, remove text
             if (countDownObject == null && numberOfPlayers > 0)
             {
-                Debug.Log(GameObject.Find("Player1" + " Fuel").guiText.text.ToString());
                 countDownObject = (GameObject)Instantiate(CountDownPrefab);
 
-                var playerColors = new Color[] { Color.green, Color.red, Color.blue };
+                var playerColors = new Color[] { Color.green, Color.red, Color.blue, Color.yellow };
+                // Create players
                 for (int i = 0; i < numberOfPlayers; i++)
                 {                     
                     var newPlayer = (GameObject)Instantiate(PlayerPrefab); 
                     newPlayer.GetComponent<Platformer2DUserControl>().PlayerID = "P" + (i + 1).ToString();
-                    newPlayer.GetComponent<PlatformerCharacter2D>().healthText = GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText;
                     newPlayer.GetComponent<PlatformerCharacter2D>().fuelText = GameObject.Find("Player" + (i + 1).ToString() + " Fuel").guiText;
+                    newPlayer.GetComponent<PlatformerCharacter2D>().healthText = GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText;
                     newPlayer.GetComponentInChildren<SpriteRenderer>().color = playerColors[i];
                     Players.Add(newPlayer);
                 }
-                gameOverText.text = "Game Over! Press 'R' for restart!";
-                gameOverText.enabled = false;
+                // Clear unneeded text
+                for (int i = numberOfPlayers; i < 4; i++)
+                {
+                    GameObject.Find("Player" + (i + 1).ToString() + " Fuel").guiText.text = "";
+                    GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText.text = "";
+                }
+                infoText.text = "Game Over! Press 'R' for restart!";
+                infoText.enabled = false;
             }
 
             if (countDownObject != null && !countDownObject.GetComponent<CountDown>().Countdown)
@@ -95,7 +103,7 @@ public class GameController : MonoBehaviour {
         else if (gameOver)
         {
             resetDeadText();
-            gameOverText.enabled = true;
+            infoText.enabled = true;
 
 
             if (Input.GetKeyDown(KeyCode.R))
