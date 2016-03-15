@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnitySampleAssets._2D;
 
 public class GameController : MonoBehaviour {
 
@@ -7,7 +9,11 @@ public class GameController : MonoBehaviour {
 	public float deadDelayTime = 3f;
     public float startDelayTime = 5f;
 	public GUIText deadText;
-	public GUIText gameOverText;
+	public GUIText infoText;
+    public GameObject CountDownPrefab;
+    private GameObject countDownObject;
+    public GameObject PlayerPrefab;
+    private List<GameObject> Players = new List<GameObject>();
 
 	CameraController cameraController;
 	public int numberOfPlayers = 3;
@@ -21,8 +27,8 @@ public class GameController : MonoBehaviour {
 
 	void Awake() {
        	resetDeadText ();
-		gameOverText.text = "Game Over! Press 'R' for restart!";
-		gameOverText.enabled = false;
+		infoText.text = "Game Over! Press 'R' for restart!";
+		infoText.enabled = false;
 
 	}
 
@@ -36,11 +42,14 @@ public class GameController : MonoBehaviour {
 		GameObject cameraControllerObject = GameObject.FindWithTag ("MainCamera");
 		if (cameraControllerObject != null) {
 			cameraController = cameraControllerObject.GetComponent <CameraController>();
-		} else {
+		} else { 
 			Debug.LogWarning ("Cannot find 'CameraController' script");
 		}
 
         waitForStart = true;
+        numberOfPlayers = 0;
+        infoText.text = "Select number of players (2, 3 or 4)";
+        infoText.enabled = true;
         startTime = Time.time + startDelayTime;
         
 	}
@@ -50,7 +59,41 @@ public class GameController : MonoBehaviour {
         if (waitForStart)
         {
             cameraController.pauseMovement();
-            if (startTime < Time.time)
+
+            if (Input.GetKey(KeyCode.Alpha2))
+                numberOfPlayers = 2;
+            else if (Input.GetKey(KeyCode.Alpha3))
+                numberOfPlayers = 3;
+            else if (Input.GetKey(KeyCode.Alpha4))
+                numberOfPlayers = 4;
+
+            // Number of players selected, create countdown and players, remove text
+            if (countDownObject == null && numberOfPlayers > 0)
+            {
+                countDownObject = (GameObject)Instantiate(CountDownPrefab);
+
+                var playerColors = new Color[] { Color.green, Color.red, Color.blue, Color.yellow };
+                // Create players
+                for (int i = 0; i < numberOfPlayers; i++)
+                {                     
+                    var newPlayer = (GameObject)Instantiate(PlayerPrefab); 
+                    newPlayer.GetComponent<Platformer2DUserControl>().PlayerID = "P" + (i + 1).ToString();
+                    newPlayer.GetComponent<PlatformerCharacter2D>().fuelText = GameObject.Find("Player" + (i + 1).ToString() + " Fuel").guiText;
+                    newPlayer.GetComponent<PlatformerCharacter2D>().healthText = GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText;
+                    newPlayer.GetComponentInChildren<SpriteRenderer>().color = playerColors[i];
+                    Players.Add(newPlayer);
+                }
+                // Clear unneeded text
+                for (int i = numberOfPlayers; i < 4; i++)
+                {
+                    GameObject.Find("Player" + (i + 1).ToString() + " Fuel").guiText.text = "";
+                    GameObject.Find("Player" + (i + 1).ToString() + " Health").guiText.text = "";
+                }
+                infoText.text = "Game Over! Press 'R' for restart!";
+                infoText.enabled = false;
+            }
+
+            if (countDownObject != null && !countDownObject.GetComponent<CountDown>().Countdown)
             {
                 cameraController.resumeMovement();
                 waitForStart = false;
@@ -60,7 +103,7 @@ public class GameController : MonoBehaviour {
         else if (gameOver)
         {
             resetDeadText();
-            gameOverText.enabled = true;
+            infoText.enabled = true;
 
 
             if (Input.GetKeyDown(KeyCode.R))
